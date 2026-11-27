@@ -12,49 +12,47 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class TestDBConnection {
 
+    private Connection c1;
+    private Connection c2;
+
     @BeforeEach
     public void setUp() throws SQLException {
-        // Reinitialise la base par defaut avant chaque test
+        // Reinitialise la base par defaut et effectue les connexions avant chaque test
         DBConnection.setNomDB("testpersonne");
+        c1 = DBConnection.getConnection();
+        c2 = DBConnection.getConnection();
     }
 
     @Test
-    public void testSingletonConnection() throws SQLException {
-        // Demande de connexion a plusieurs reprises
-        Connection c1 = DBConnection.getConnection();
-        Connection c2 = DBConnection.getConnection();
-
+    public void testSingletonConnection() {
         // Verification qu'il n'existe qu'une seule instance de connexion (meme reference memoire)
         assertSame(c1, c2);
     }
 
     @Test
     public void testChangementDeBase() throws SQLException {
-        Connection c1 = DBConnection.getConnection();
-
         // Changement de la base demandee vers une seconde base
         DBConnection.setNomDB("test");
-        Connection c2 = DBConnection.getConnection();
+        Connection c3 = DBConnection.getConnection();
 
         // NOUVELLE connexion creee suite a setNomDB
-        assertNotSame(c1, c2);
+        assertNotSame(c1, c3);
 
         // Verification que les appels suivants retournent bien cette nouvelle connexion unique
-        Connection c3 = DBConnection.getConnection();
-        assertSame(c2, c3);
+        Connection c4 = DBConnection.getConnection();
+        assertSame(c3, c4);
     }
 
     @Test
     public void testChangementDeNom() throws SQLException {
-        Connection c1 = DBConnection.getConnection();
         // Verification que la base initiale est bien testpersonne
         assertEquals("testpersonne", c1.getCatalog());
 
         // Changement du nom de la base
         DBConnection.setNomDB("test");
-        Connection c2 = DBConnection.getConnection();
+        Connection c3 = DBConnection.getConnection();
 
         // Verification que la nouvelle connexion pointe bien vers la nouvelle base
-        assertEquals("test", c2.getCatalog());
+        assertEquals("test", c3.getCatalog());
     }
 }
