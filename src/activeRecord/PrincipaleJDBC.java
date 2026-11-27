@@ -119,9 +119,6 @@ public class PrincipaleJDBC {
         } catch (SQLException e) {
             System.out.println("*** ERREUR SQL ***");
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            System.out.println("*** ERREUR lors du chargement du driver ***");
-            e.printStackTrace();
         } catch (Exception e) {
             System.out.println("*** ERREUR inconnue... ***");
             e.printStackTrace();
